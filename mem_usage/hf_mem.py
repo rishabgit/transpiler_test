@@ -23,9 +23,9 @@ mem = psutil.virtual_memory()
 print(f"Memory usage at start: {mem.used / (1024 ** 3):.2f} GB")
 
 # model_name = 'mosaicml/mpt-7b'
-# model_name = 'mosaicml/mpt-1b-redpajama-200b'
+model_name = 'mosaicml/mpt-1b-redpajama-200b'
 # model_name = 'replit/replit-code-v1-3b'
-model_name = 'openlm-research/open_llama_3b'
+# model_name = 'openlm-research/open_llama_3b'
 
 # model_name = 'michellejieli/emotion_text_classifier'
 
@@ -49,6 +49,11 @@ model_input = {id: expanded_dummy[0]}
 mem = psutil.virtual_memory()
 print(f"Memory usage after creating input tensors: {mem.used / (1024 ** 3):.2f} GB")
 
+# throws error for llms
+comp_model = torch.compile(model)
+print(f"Memory usage after torch.compile: {mem.used / (1024 ** 3):.2f} GB")
+comp_model(**model_input)
+print(f"Memory usage after first torch.compile call: {mem.used / (1024 ** 3):.2f} GB")
 
 print('transpiling...')
 graph = transpile(model.__call__, source="torch", to="jax", kwargs=model_input)
